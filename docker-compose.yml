@@ -6,8 +6,8 @@ services:
     image: xmconstantx/configurable-caddy-2-alpine:latest
     container_name: caddy
     environment:
-      - RELAY_URL=nostr.madmemes.xyz
-      - CONTACT_EMAIL=bobbaxter@protonmail.com
+      - RELAY_URL=nostr.yoursite.com
+      - CONTACT_EMAIL=your@email.com
     build:
       context: caddy/.
     ports:
@@ -22,9 +22,9 @@ services:
     image: xmconstantx/configurable-nostr-rs-relay:latest
     container_name: public-relay
     environment:
-      - RELAY_URL=nostr.madmemes.xyz
-      - CONTACT_EMAIL=bobbaxter@protonmail.com
-      - RELAY_NAME="Mad Memes"
+      - RELAY_URL=nostr.yoursite.com
+      - CONTACT_EMAIL=your@email.com
+      - RELAY_NAME="Your Relay Name"
     build:
       context: relay/.
     restart: on-failure

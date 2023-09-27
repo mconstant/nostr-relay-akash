@@ -5,8 +5,8 @@ services:
   caddy:
     image: xmconstantx/configurable-caddy-2-alpine:latest
     env:
-      - RELAY_URL=nostr.madmemes.xyz
-      - CONTACT_EMAIL=bobbaxter@protonmail.com
+      - RELAY_URL=nostr.yoursite.com
+      - CONTACT_EMAIL=your@email.com
     expose:
       - port: 80
         as: 80
@@ -17,13 +17,13 @@ services:
         to:
           - global: true
         accept:
-          - "nostr.madmemes.xyz"
+          - "nostr.yoursite.com"
   public-relay:
     image: xmconstantx/configurable-nostr-rs-relay:latest
     env:
-      - RELAY_URL=nostr.madmemes.xyz
-      - CONTACT_EMAIL=bobbaxter@protonmail.com
-      - RELAY_NAME="Mad Memes"
+      - RELAY_URL=nostr.yoursite.com
+      - CONTACT_EMAIL=your@email.com
+      - RELAY_NAME="Your Relay Name"
     expose:
       - port: 8080
         as: 8080
