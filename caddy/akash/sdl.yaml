@@ -1,0 +1,98 @@
+---
+version: "2.0"
+
+services:
+  caddy:
+    image: xmconstantx/configurable-caddy-2-alpine:latest
+    env:
+      - RELAY_URL=nostr.madmemes.xyz
+      - CONTACT_EMAIL=bobbaxter@protonmail.com
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+      - port: 443
+        as: 443
+        to:
+          - global: true
+        accept:
+          - "nostr.madmemes.xyz"
+  public-relay:
+    image: xmconstantx/configurable-nostr-rs-relay:latest
+    env:
+      - RELAY_URL=nostr.madmemes.xyz
+      - CONTACT_EMAIL=bobbaxter@protonmail.com
+      - RELAY_NAME="Mad Memes"
+    expose:
+      - port: 8080
+        as: 8080
+        to:
+          - service: caddy
+          - service: web
+  web:
+    image: getumbrel/umbrel-nostr-relay
+    env:
+      - RELAY_HOST="127.0.0.1"
+      - RELAY_PORT="8080"
+    expose:
+      - port: 1234
+        as: 1234
+
+profiles:
+  compute:
+    caddy:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 512Mi
+        storage:
+          size: 500Mi
+    public-relay:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 512Mi
+        storage:
+          size: 500Mi
+    web:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 512Mi
+        storage:
+          size: 500Mi
+  placement:
+    dcloud:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63
+      pricing:
+        caddy:
+          denom: uakt
+          amount: 1
+        public-relay:
+          denom: uakt
+          amount: 1
+        web:
+          denom: uakt
+          amount: 1
+
+deployment:
+  caddy:
+    dcloud:
+      profile: caddy
+      count: 1
+  public-relay:
+    dcloud:
+      profile: public-relay
+      count: 1
+  web:
+    dcloud:
+      profile: web
+      count: 1

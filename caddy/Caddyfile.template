@@ -1,0 +1,12 @@
+{
+	email $CONTACT_EMAIL #Mail used to generate the HTTPS certificate.
+}
+
+# Replace your.relay.domain by the domain name of your choice!
+$RELAY_URL {
+    reverse_proxy public-relay:8080
+}
+
+dash.$RELAY_URL {
+    reverse_proxy public-relay-web:3000
+}

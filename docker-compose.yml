@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+
+  caddy:
+    image: xmconstantx/configurable-caddy-2-alpine:latest
+    container_name: caddy
+    environment:
+      - RELAY_URL=nostr.madmemes.xyz
+      - CONTACT_EMAIL=bobbaxter@protonmail.com
+    build:
+      context: caddy/.
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - caddy
+      - default
+    restart: unless-stopped
+
+  public-relay:
+    image: xmconstantx/configurable-nostr-rs-relay:latest
+    container_name: public-relay
+    environment:
+      - RELAY_URL=nostr.madmemes.xyz
+      - CONTACT_EMAIL=bobbaxter@protonmail.com
+      - RELAY_NAME="Mad Memes"
+    build:
+      context: relay/.
+    restart: on-failure
+    networks:
+      - caddy
+
+  web:
+    image: getumbrel/umbrel-nostr-relay
+    user: "1000:1000"
+    container_name: public-relay-web
+    restart: on-failure
+    environment:
+      RELAY_HOST: "public-relay"
+      RELAY_PORT: "8080"
+    # port 3000 web
+    networks:
+      - caddy
+
+networks:
+  caddy:
+    name: caddy
